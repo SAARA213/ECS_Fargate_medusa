@@ -1,32 +1,94 @@
 {
-  "family": "nodejs-app-task-definition",
-  "networkMode": "awsvpc",
-  "requiresCompatibilities": ["FARGATE"],
-  "volumes": [],
-  "cpu": "1024",
-  "memory": "3072",
-  "taskRoleArn": "arn:aws:iam::670144304933:role/ecsTaskExecutionRole",
-  "executionRoleArn": "arn:aws:iam::670144304933:role/ecsTaskExecutionRole",
-  "containerDefinitions": [
-    {
-      "name": "nodejs-app",
-      "image": "670144304933.dkr.ecr.us-east-1.amazonaws.com/nodejs:latest",
-      "portMappings": [
+    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:637423411572:task-definition/medusa-app-task-definition:1",
+    "containerDefinitions": [
         {
-          "containerPort": 3000,
-          "hostPort": 3000,
-          "protocol": "tcp",
-          "appProtocol": "http"
+            "name": "medusa1",
+            "image": "637423411572.dkr.ecr.ap-south-1.amazonaws.com/medusa1",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "medusa1-9000-tcp",
+                    "containerPort": 9000,
+                    "hostPort": 9000,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/medusa-app-task-definition",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "ap-south-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
         }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/nodejs-app",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "ecs"
+    ],
+    "family": "medusa-app-task-definition",
+    "taskRoleArn": "arn:aws:iam::637423411572:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::637423411572:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
         }
-      }
-    }
-  ]
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-09-20T10:14:55.377Z",
+    "registeredBy": "arn:aws:iam::637423411572:root",
+    "tags": []
 }

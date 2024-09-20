@@ -1,4 +1,9 @@
 # Deploy medusa by " ECS Fargate spot" & Create a "terraform script for ECS Fargate spot " and deploy it
+
+![image](https://github.com/user-attachments/assets/a39a5afd-23f9-4f36-a1d8-6d34191ebd9e)
+
+
+
 ## Set Up AWS Credentials
 
 Ensure you have updated AWS credentials. You'll use these to authenticate your Terraform scripts with AWS.

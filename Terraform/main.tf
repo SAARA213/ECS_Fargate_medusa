@@ -129,8 +129,8 @@ resource "aws_security_group" "medusa_sg" {
     vpc_id      = aws_vpc.Medusa_VPC.id
 
     ingress {
-        from_port   = 3000
-        to_port     = 3000
+        from_port   = 9000
+        to_port     = 9000
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
     }
@@ -168,7 +168,7 @@ resource "aws_lb" "medusa_alb" {
 # Target Group
 resource "aws_lb_target_group" "medusa_tg" {
     name        = "alb-tg"
-    port        = 3000
+    port        = 9000
     protocol    = "HTTP"
     vpc_id      = aws_vpc.Medusa_VPC.id
     target_type = "ip"
@@ -259,8 +259,8 @@ resource "aws_ecs_task_definition" "medusa-app-task" {
         essential    = true
         portMappings = [
             {
-            containerPort = 3000
-            hostPort      = 3000
+            containerPort = 9000
+            hostPort      = 9000
             protocol      = "tcp"
             }
         ]
@@ -292,8 +292,8 @@ resource "aws_ecs_service" "medusa-app-service" {
 
     load_balancer {
         target_group_arn = aws_lb_target_group.medusa_tg.arn
-        container_name   = "nodejs-app"
-        container_port   = 3000
+        container_name   = "medusa-app"
+        container_port   = 9000
     }
 
     depends_on = [

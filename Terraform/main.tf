@@ -154,7 +154,7 @@ resource "aws_security_group" "medusa_sg" {
 
 # Application Load Balancer
 resource "aws_lb" "medusa_alb" {
-    name               = "nodejs-alb"
+    name               = "medusa-alb"
     load_balancer_type = "application"
     security_groups    = [aws_security_group.nodejs_sg.id]
     subnets            = [aws_subnet.public-subnet-1.id,aws_subnet.public-subnet-2.id]

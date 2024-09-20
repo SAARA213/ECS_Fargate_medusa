@@ -1,13 +1,15 @@
-FROM node:14
+FROM node:18-alpine
 
-# Create app directory
 WORKDIR /usr/src/app
 
-# Copy app source
+COPY package*.json ./
+
+RUN node --max-old-space-size=1024 $(which npm) install -g @medusajs/medusa
+
+RUN node --max-old-space-size=1024 $(which npm) install
+
 COPY . .
 
-# Bind to port 3000
-EXPOSE 3000
+EXPOSE 9000
 
-# Command to run the application
-CMD [ "node", "app.js" ]
+CMD ["sh", "-c", "medusa migrations run && medusa start"]

@@ -1,9 +1,9 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:637423411572:task-definition/medusa-app-task-definition:1",
+    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:637423411572:task-definition/medusa-app-task-definition:3",
     "containerDefinitions": [
         {
             "name": "medusa1",
-            "image": "637423411572.dkr.ecr.ap-south-1.amazonaws.com/medusa1",
+            "image": "637423411572.dkr.ecr.ap-south-1.amazonaws.com/medusa1:c591718333ce7521f8170ce6578ea24ee3459f4f",
             "cpu": 0,
             "portMappings": [
                 {
@@ -16,10 +16,8 @@
             ],
             "essential": true,
             "environment": [],
-            "environmentFiles": [],
             "mountPoints": [],
             "volumesFrom": [],
-            "ulimits": [],
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -29,8 +27,7 @@
                     "max-buffer-size": "25m",
                     "awslogs-region": "ap-south-1",
                     "awslogs-stream-prefix": "ecs"
-                },
-                "secretOptions": []
+                }
             },
             "systemControls": []
         }
@@ -39,7 +36,7 @@
     "taskRoleArn": "arn:aws:iam::637423411572:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::637423411572:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 1,
+    "revision": 3,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
@@ -88,7 +85,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2024-09-20T10:14:55.377Z",
-    "registeredBy": "arn:aws:iam::637423411572:root",
+    "registeredAt": "2024-09-20T13:23:58.034Z",
+    "registeredBy": "arn:aws:iam::637423411572:user/Saaradha",
     "tags": []
 }

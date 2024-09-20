@@ -1,16 +1,16 @@
-resource "aws_vpc" "NodeJs_VPC" {
+resource "aws_vpc" "Medusa_VPC" {
     cidr_block           = var.vpc_cidr
     instance_tenancy     = "default"
     enable_dns_hostnames = true
     enable_dns_support   = true
 
     tags = {
-        Name = "nodejs"
+        Name = "Medusa"
     }
 }
 
 resource "aws_subnet" "public-subnet-1" {
-    vpc_id                  = aws_vpc.NodeJs_VPC.id
+    vpc_id                  = aws_vpc.Medusa_VPC.id
     cidr_block              = var.public_sb1_cidr
     availability_zone       = "us-east-1a"
     map_public_ip_on_launch = true
@@ -21,7 +21,7 @@ resource "aws_subnet" "public-subnet-1" {
 }
 
 resource "aws_subnet" "private-subnet-1" {
-    vpc_id            = aws_vpc.NodeJs_VPC.id
+    vpc_id            = aws_vpc.Medusa_VPC.id
     cidr_block        = var.private_sb1_cidr
     availability_zone = "us-east-1a"
     tags = {
@@ -30,7 +30,7 @@ resource "aws_subnet" "private-subnet-1" {
 }
 
 resource "aws_subnet" "public-subnet-2" {
-    vpc_id                  = aws_vpc.NodeJs_VPC.id
+    vpc_id                  = aws_vpc.Medusa_VPC.id
     cidr_block              = var.public_sb2_cidr
     availability_zone       = "us-east-1b"
     map_public_ip_on_launch = true
@@ -41,7 +41,7 @@ resource "aws_subnet" "public-subnet-2" {
 }
 
 resource "aws_subnet" "private-subnet-2" {
-    vpc_id            = aws_vpc.NodeJs_VPC.id
+    vpc_id            = aws_vpc.Medusa_VPC.id
     cidr_block        = var.private_sb2_cidr
     availability_zone = "us-east-1b"
     
@@ -51,7 +51,7 @@ resource "aws_subnet" "private-subnet-2" {
 }
 
 resource "aws_internet_gateway" "igw" {
-    vpc_id = aws_vpc.NodeJs_VPC.id
+    vpc_id = aws_vpc.Medusa_VPC.id
     
     tags = {
         Name = "iqw"
@@ -59,7 +59,7 @@ resource "aws_internet_gateway" "igw" {
 } 
 
 resource "aws_route_table" "public_route_table" {
-    vpc_id = aws_vpc.NodeJs_VPC.id
+    vpc_id = aws_vpc.Medusa_VPC.id
     
     route {
         cidr_block = "0.0.0.0/0"
@@ -99,7 +99,7 @@ resource "aws_nat_gateway" "nat_gw" {
 }
 
 resource "aws_route_table" "private_route_table" {
-    vpc_id = aws_vpc.NodeJs_VPC.id
+    vpc_id = aws_vpc.Medusa_VPC.id
     
     route {
         cidr_block = "0.0.0.0/0"
@@ -124,9 +124,9 @@ resource "aws_route_table_association" "rta_to_private2" {
 ##########################################################################
 
 # Create a security group for the Load Balancer and ECS service
-resource "aws_security_group" "nodejs_sg" {
-    name_prefix = "nodejs-security-group"
-    vpc_id      = aws_vpc.NodeJs_VPC.id
+resource "aws_security_group" "medusa_sg" {
+    name_prefix = "medusa-security-group"
+    vpc_id      = aws_vpc.Medusa_VPC.id
 
     ingress {
         from_port   = 3000
@@ -153,7 +153,7 @@ resource "aws_security_group" "nodejs_sg" {
 ############################################################################
 
 # Application Load Balancer
-resource "aws_lb" "nodejs_alb" {
+resource "aws_lb" "medusa_alb" {
     name               = "nodejs-alb"
     load_balancer_type = "application"
     security_groups    = [aws_security_group.nodejs_sg.id]
@@ -161,45 +161,45 @@ resource "aws_lb" "nodejs_alb" {
     ip_address_type    = "ipv4" 
 
     tags = {
-        Name = "NodeJs-LB"
+        Name = "Medusa-LB"
     }
 }
 
 # Target Group
-resource "aws_lb_target_group" "nodejs_tg" {
+resource "aws_lb_target_group" "medusa_tg" {
     name        = "alb-tg"
     port        = 3000
     protocol    = "HTTP"
-    vpc_id      = aws_vpc.NodeJs_VPC.id
+    vpc_id      = aws_vpc.Medusa_VPC.id
     target_type = "ip"
 }
 
 resource "aws_lb_listener" "front_end" {
-    load_balancer_arn = aws_lb.nodejs_alb.arn
+    load_balancer_arn = aws_lb.medusa_alb.arn
     port              = 80
     protocol          = "HTTP"
 
     default_action {
         type             = "forward"
-        target_group_arn = aws_lb_target_group.nodejs_tg.arn
+        target_group_arn = aws_lb_target_group.medusa_tg.arn
     }
 }
 
 ##################################################################################
 
 # Create an ECR repository
-resource "aws_ecr_repository" "nodejs" {
-    name         = "nodejs"
+resource "aws_ecr_repository" "medusa" {
+    name         = "medusa"
     force_delete = true
 }
 
 # Create an ECS cluster
-resource "aws_ecs_cluster" "nodejs-app-cluster" {
-    name = "nodejs-app-cluster"
+resource "aws_ecs_cluster" "medusa-app-cluster" {
+    name = "medusa-app-cluster"
 }
 
-resource "aws_ecs_cluster_capacity_providers" "nodejs-app-cluster-capacity_provider" {
-    cluster_name       = aws_ecs_cluster.nodejs-app-cluster.name
+resource "aws_ecs_cluster_capacity_providers" "medusa-app-cluster-capacity_provider" {
+    cluster_name       = aws_ecs_cluster.medusa-app-cluster.name
     capacity_providers = ["FARGATE"]
 
     default_capacity_provider_strategy {
@@ -210,8 +210,8 @@ resource "aws_ecs_cluster_capacity_providers" "nodejs-app-cluster-capacity_provi
 }
 
 # Create a CloudWatch log group
-resource "aws_cloudwatch_log_group" "nodejs_app" {
-    name              = "/ecs/nodejs-app"
+resource "aws_cloudwatch_log_group" "medusa_app" {
+    name              = "/ecs/medusa-app"
     retention_in_days = 7
 }
 
@@ -243,8 +243,8 @@ resource "aws_iam_role" "ecsTaskExecutionRole" {
 #####################################################################################
 
 # Create an ECS task definition
-resource "aws_ecs_task_definition" "nodejs-app-task" {
-    family                   = "nodejs-app-task-definition"
+resource "aws_ecs_task_definition" "medusa-app-task" {
+    family                   = "medusa-app-task-definition"
     network_mode             = "awsvpc"
     requires_compatibilities = ["FARGATE"]
     cpu                      = "1024"  # 1 vCPU
@@ -254,8 +254,8 @@ resource "aws_ecs_task_definition" "nodejs-app-task" {
 
     container_definitions = jsonencode([
         {
-        name         = "nodejs-app"
-        image        = "${aws_ecr_repository.nodejs.repository_url}:latest"
+        name         = "medusa-app"
+        image        = "${aws_ecr_repository.medusa.repository_url}:latest"
         essential    = true
         portMappings = [
             {
@@ -267,7 +267,7 @@ resource "aws_ecs_task_definition" "nodejs-app-task" {
         logConfiguration = {
             logDriver           = "awslogs"
             options             = {
-                awslogs-group         = aws_cloudwatch_log_group.nodejs_app.name
+                awslogs-group         = aws_cloudwatch_log_group.medusa_app.name
                 awslogs-region        = "us-east-1"
                 awslogs-stream-prefix = "ecs"
             }
@@ -277,27 +277,27 @@ resource "aws_ecs_task_definition" "nodejs-app-task" {
 }
 
 # Create an ECS service
-resource "aws_ecs_service" "nodejs-app-service" {
-    name            = "nodejs-app-service"
-    cluster         = aws_ecs_cluster.nodejs-app-cluster.id
-    task_definition = aws_ecs_task_definition.nodejs-app-task.arn
+resource "aws_ecs_service" "medusa-app-service" {
+    name            = "medusa-app-service"
+    cluster         = aws_ecs_cluster.medusa-app-cluster.id
+    task_definition = aws_ecs_task_definition.medusa-app-task.arn
     desired_count   = 1
     launch_type     = "FARGATE"
 
     network_configuration {
         subnets          = [aws_subnet.private-subnet-1.id,aws_subnet.private-subnet-2.id]
-        security_groups  = [aws_security_group.nodejs_sg.id]
+        security_groups  = [aws_security_group.medusa_sg.id]
         assign_public_ip = false
     }
 
     load_balancer {
-        target_group_arn = aws_lb_target_group.nodejs_tg.arn
+        target_group_arn = aws_lb_target_group.medusa_tg.arn
         container_name   = "nodejs-app"
         container_port   = 3000
     }
 
     depends_on = [
-        aws_ecs_task_definition.nodejs-app-task,
+        aws_ecs_task_definition.medusa-app-task,
         aws_lb_listener.front_end
     ]
 }

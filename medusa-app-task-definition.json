@@ -1,74 +1,45 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:ap-south-1:637423411572:task-definition/medusa-app-task-definition:3",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:637423411572:task-definition/medusa-task:1",
     "containerDefinitions": [
         {
-            "name": "medusa1",
-            "image": "637423411572.dkr.ecr.ap-south-1.amazonaws.com/medusa1:c591718333ce7521f8170ce6578ea24ee3459f4f",
+            "name": "medusa-container",
+            "image": "medusajs/medusa:latest",
             "cpu": 0,
             "portMappings": [
                 {
-                    "name": "medusa1-9000-tcp",
                     "containerPort": 9000,
                     "hostPort": 9000,
-                    "protocol": "tcp",
-                    "appProtocol": "http"
+                    "protocol": "tcp"
                 }
             ],
             "essential": true,
-            "environment": [],
+            "environment": [
+                {
+                    "name": "JWT_SECRET",
+                    "value": "your-jwt-secret"
+                },
+                {
+                    "name": "DATABASE_URL",
+                    "value": "your-postgresql-database-url"
+                }
+            ],
             "mountPoints": [],
             "volumesFrom": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "/ecs/medusa-app-task-definition",
-                    "mode": "non-blocking",
-                    "awslogs-create-group": "true",
-                    "max-buffer-size": "25m",
-                    "awslogs-region": "ap-south-1",
-                    "awslogs-stream-prefix": "ecs"
-                }
-            },
             "systemControls": []
         }
     ],
-    "family": "medusa-app-task-definition",
-    "taskRoleArn": "arn:aws:iam::637423411572:role/ecsTaskExecutionRole",
+    "family": "medusa-task",
     "executionRoleArn": "arn:aws:iam::637423411572:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
-    "revision": 3,
+    "revision": 1,
     "volumes": [],
     "status": "ACTIVE",
     "requiresAttributes": [
-        {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.ecr-auth"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.task-iam-role"
-        },
-        {
-            "name": "ecs.capability.execution-role-ecr-pull"
-        },
         {
             "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
         },
         {
             "name": "ecs.capability.task-eni"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
         }
     ],
     "placementConstraints": [],
@@ -79,13 +50,10 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "1024",
-    "memory": "3072",
-    "runtimePlatform": {
-        "cpuArchitecture": "X86_64",
-        "operatingSystemFamily": "LINUX"
-    },
-    "registeredAt": "2024-09-20T13:23:58.034Z",
+    "cpu": "256",
+    "memory": "512",
+    "registeredAt": "2024-09-23T04:43:01.910Z",
     "registeredBy": "arn:aws:iam::637423411572:user/Saaradha",
     "tags": []
 }
+ 

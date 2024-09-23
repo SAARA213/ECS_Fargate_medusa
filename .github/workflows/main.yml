@@ -40,7 +40,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: medusa-app-task-definition.json 
+          task-definition: medusa-task.json 
           container-name: medusa-container
           image: ${{ steps.build-image.outputs.image }}    
       - name: Deploy Amazon ECS task definition

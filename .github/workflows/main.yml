@@ -32,13 +32,15 @@ jobs:
 
       - name: Build Docker image
         run: |
+          DOCKER_IMAGE="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest"
+          echo "Docker Image Tag: $DOCKER_IMAGE"
           echo "Building Docker image..."
-          docker build -t ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest .
+          docker build -t "$DOCKER_IMAGE" .
 
       - name: Push Docker image to ECR
         run: |
           echo "Pushing Docker image to ECR..."
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+          docker push "$DOCKER_IMAGE"
 
-
+   
     

@@ -1,15 +1,19 @@
-name: CICD
+name: CICD Pipeline for Medusa Deployment
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build-and-deploy:
-    runs-on: [ ubuntu-latest ]
+    runs-on: ubuntu-latest
+
     steps:
+      # Step 1: Checkout the source code
       - name: Checkout source
         uses: actions/checkout@v3
+
+      # Step 2: Configure AWS credentials
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -17,33 +21,33 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'us-east-1'
 
-          # Step 3: Set up Terraform
+      # Step 3: Set up Terraform
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.5.0  # Specify the required Terraform version
+          terraform_version: 1.5.0
 
       # Step 4: Initialize Terraform
       - name: Terraform Init
-        working-directory: ./terraform  # Path to your terraform directory
+        working-directory: ./Terraform
         run: terraform init
 
       # Step 5: Terraform Plan
       - name: Terraform Plan
-        working-directory: ./terraform
+        working-directory: ./Terraform
         run: terraform plan
 
-      # Step 6: Terraform Apply (Deploy Infrastructure)
+      # Step 6: Apply Terraform (Deploy Infrastructure)
       - name: Terraform Apply
-        working-directory: ./terraform
+        working-directory: ./Terraform
         run: terraform apply -auto-approve
-        
+
+      # Step 7: Login to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          mask-password: 'true'
-          
+
+      # Step 8: Build, tag, and push the Docker image to Amazon ECR
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
@@ -51,26 +55,24 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
           REPOSITORY: medusa-app
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT    
+          echo "image=$ECR_REGISTRY/$REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
+      # Step 9: Update ECS Task Definition with the new image
+      - name: Fill in the new image ID in the ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: medusa-task1.json 
+          task-definition: medusa-task1.json
           container-name: medusa-app
-          image: ${{ steps.build-image.outputs.image }}    
-      - name: Deploy Amazon ECS task definition
+          image: ${{ steps.build-image.outputs.image }}
+
+      # Step 10: Deploy the updated task definition to ECS
+      - name: Deploy ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           service: app-service
           cluster: ecscluster
-          wait-for-service-stability: true    
-   
-    
+          wait-for-service-stability: true

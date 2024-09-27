@@ -30,17 +30,17 @@ jobs:
       # Step 4: Initialize Terraform
       - name: Terraform Init
         working-directory: ./Terraform
-        run: terraform init
+       
 
       # Step 5: Terraform Plan
       - name: Terraform Plan
         working-directory: ./Terraform
-        run: terraform plan
+       
 
       # Step 6: Apply Terraform (Deploy Infrastructure)
       - name: Terraform Apply
         working-directory: ./Terraform
-        run: terraform apply -auto-approve
+        
 
       # Step 7: Login to Amazon ECR
       - name: Login to Amazon ECR

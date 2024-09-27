@@ -82,15 +82,3 @@ resource "aws_ecs_service" "medusa_service" {
     assign_public_ip = true
   }
 }
-
-output "ecs_service_arn" {
-  value = aws_ecs_service.medusa_service.id
-}
-
- 
-
-
-
-
-  
-

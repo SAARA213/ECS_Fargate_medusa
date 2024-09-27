@@ -30,6 +30,7 @@ jobs:
       # Step 4: Initialize Terraform
       - name: Terraform Init
         working-directory: ./Terraform
+        echo "Terraform initialized successfully!"
        
 
       # Step 5: Terraform Plan

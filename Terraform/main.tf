@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "ap-south-1"  # Change to your preferred region
-}
-
 resource "aws_ecs_cluster" "medusa_cluster" {
   name = "medusa-ecs-cluster"
 }
@@ -102,4 +98,5 @@ resource "aws_subnet" "public" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 }
-    
+
+
